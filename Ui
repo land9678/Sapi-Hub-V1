@@ -1,6 +1,3 @@
---// to the 2 peoplee who are constantly watching this repo, get a life yall weird.
---// to the people who are still forking this unoptimized garbage, if you want a custom optimized rewrite for $, hmu on discord: federal6768 or federal.
-
 local Kavo = {}
 
 local tween = game:GetService("TweenService")
@@ -16,7 +13,6 @@ function Kavo:DraggingEnabled(frame, parent)
     local dragging = false
     local dragInput, inputPos, framePos
 
-    -- function to start dragging
     local function startDrag(input)
         dragging = true
         inputPos = input.Position
@@ -28,7 +24,6 @@ function Kavo:DraggingEnabled(frame, parent)
             end
         end)
     end
-
 
     frame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
