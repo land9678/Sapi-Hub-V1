@@ -301,6 +301,41 @@ function to(Pos)
     end
 end
 
+function starthop()
+    if getgenv().targ == nil then
+        if getgenv().shop == false then
+            if getgenv().hop == 1 then
+                local safezone = Instance.new("Part")
+                safezone.Position = Vector3.new(-11579.2, 2066.91, -6293.29)
+                safezone.CanCollide = true
+                safezone.Anchored = true
+                safezone.Name = "Chest11"
+                safezone.Parent = game:GetService("Workspace")
+                safezone.Size = Vector3.new(2, 2.02, 1)
+                wHop()
+                getgenv().shop = true
+                getgenv().hop = getgenv().hop + 1
+                repeat
+                    wait()
+                    if game.Workspace:FindFirstChild("Chest11") then
+                        local a = game.Workspace:FindFirstChild("Chest11")
+                        to(a.CFrame * CFrame.new(0, 9999, 0))
+                    else
+                        local safezone = Instance.new("Part")
+                        safezone.Position = Vector3.new(-11579.2, 2066.91, -6293.29)
+                        safezone.CanCollide = true
+                        safezone.Anchored = true
+                        safezone.Name = "Chest11"
+                        safezone.Parent = game:GetService("Workspace")
+                        safezone.Size = Vector3.new(2, 2.02, 1)
+                    end
+                until lp.PlayerGui.Main.InCombat.Visible == false
+                Hop()
+            end
+        end
+    end
+end
+
 function target()
     if not arecall then
         arecall = true
@@ -522,41 +557,6 @@ function wEarn(targ, earn)
     wSend(data)
 end
 
-function starthop()
-    if getgenv().targ == nil then
-        if getgenv().shop == false then
-            if getgenv().hop == 1 then
-                local safezone = Instance.new("Part")
-                safezone.Position = Vector3.new(-11579.2, 2066.91, -6293.29)
-                safezone.CanCollide = true
-                safezone.Anchored = true
-                safezone.Name = "Chest11"
-                safezone.Parent = game:GetService("Workspace")
-                safezone.Size = Vector3.new(2, 2.02, 1)
-                wHop()
-                getgenv().shop = true
-                getgenv().hop = getgenv().hop + 1
-                repeat
-                    wait()
-                    if game.Workspace:FindFirstChild("Chest11") then
-                        local a = game.Workspace:FindFirstChild("Chest11")
-                        to(a.CFrame * CFrame.new(0, 9999, 0))
-                    else
-                        local safezone = Instance.new("Part")
-                        safezone.Position = Vector3.new(-11579.2, 2066.91, -6293.29)
-                        safezone.CanCollide = true
-                        safezone.Anchored = true
-                        safezone.Name = "Chest11"
-                        safezone.Parent = game:GetService("Workspace")
-                        safezone.Size = Vector3.new(2, 2.02, 1)
-                    end
-                until lp.PlayerGui.Main.InCombat.Visible == false
-                Hop()
-            end
-        end
-    end
-end
-
 function buso()
     if (not (game.Players.LocalPlayer.Character:FindFirstChild("HasBuso"))) then
         local rel = game.ReplicatedStorage
@@ -760,47 +760,38 @@ pcall(
         )
     end
 )
-pcall(
-    function()
-        spawn(
-            function()
-                while wait() and getgenv().shop == false do
-                    if getgenv().targ == nil or not getgenv().targ or not getgenv().targ.Character then
-                        target()
-                    end
-                    if getgenv().targ == nil then
-                        starthop()
-                    end
-                    if game.Players.LocalPlayer.Character.Humanoid.Sit == true then
-                        game.Players.LocalPlayer.Character.Humanoid.Sit = false
-                    end
-                    pcall(
-                        function()
-                            if
-                                getgenv().targ.Character:FindFirstChild("HumanoidRootPart") and
-                                    game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                             then
-                                if
-                                    (getgenv().targ.Character:WaitForChild("HumanoidRootPart").CFrame.Position -
-                                        game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.Position).Magnitude <
-                                        20
-                                 then
-                                    random()
-                                    equip(getgenv().weapon)
-                                    if getgenv().weapon == "Gun" then
-                                        wait(1)
-                                    else
-                                        wait(1.5)
-                                    end
-                                end
-                            end
-                        end
-                    )
-                end
+pcall(function()
+    spawn(function()
+        while wait() and getgenv().shop == false do
+            if getgenv().targ == nil or not getgenv().targ or not getgenv().targ.Character then
+                target()
             end
-        )
-    end
-)
+
+            if getgenv().targ == nil then
+                starthop()
+            end
+
+            if game.Players.LocalPlayer.Character.Humanoid.Sit == true then
+                game.Players.LocalPlayer.Character.Humanoid.Sit = false
+            end
+
+            pcall(function()
+                if getgenv().targ.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    if (getgenv().targ.Character:WaitForChild("HumanoidRootPart").CFrame.Position - game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.Position).Magnitude < 20 then
+                        random()
+                        equip(getgenv().weapon)
+
+                        if getgenv().weapon == "Gun" then
+                            wait(1)
+                        else
+                            wait(1.5)
+                        end
+                    end
+                end
+            end)
+        end
+    end)
+end)
 
 -- Random weapon
 function random()
@@ -1032,32 +1023,3 @@ pcall(
 )
 
 require(game.ReplicatedStorage.Util.CameraShaker):Stop()
-
-xShadowFastAttackx = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
-
-xShadowx = debug.getupvalues(xShadowFastAttackx)[2]
-
-spawn(
-    function()
-        game:GetService("RunService").RenderStepped:Connect(
-            function()
-                if typeof(xShadowx) == "table" then
-                    pcall(
-                        function()
-                            xShadowx.activeController.timeToNextAttack = (math.huge ^ math.huge ^ math.huge)
-                            xShadowx.activeController.timeToNextAttack = 0
-                            xShadowx.activeController.hitboxMagnitude = 200
-                            xShadowx.activeController.active = false
-                            xShadowx.activeController.timeToNextBlock = 0
-                            xShadowx.activeController.focusStart = 0
-                            xShadowx.activeController.increment = 4
-                            xShadowx.activeController.blocking = false
-                            xShadowx.activeController.attacking = false
-                            xShadowx.activeController.humanoid.AutoRotate = 50
-                        end
-                    )
-                end
-            end
-        )
-    end
-)
