@@ -301,6 +301,50 @@ function to(Pos)
     end
 end
 
+function Hop()
+    local PlaceID = game.PlaceId
+    local AllIDs = {}
+    local foundAnything = ""
+    local actualHour = os.date("!*t").hour
+    local Deleted = false
+
+    local function GetServers(cursor)
+        local url = "https://games.roblox.com/v1/games/" .. PlaceID .. "/servers/Public?sortOrder=2&limit=100"
+        if cursor then
+            url = url .. "&cursor=" .. cursor
+        end
+        return game.HttpService:JSONDecode(game:HttpGet(url))
+    end
+
+    local function TeleportToServer(serverId)
+        game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, serverId, game.Players.LocalPlayer)
+    end
+
+    while wait() do
+        local site = GetServers(foundAnything)
+        if site then
+            foundAnything = site.nextPageCursor or ""
+            for _, server in ipairs(site.data) do
+                if tonumber(server.maxPlayers) > tonumber(server.playing) then
+                    local serverId = tostring(server.id)
+                    local isNewServer = true
+                    for _, existingId in ipairs(AllIDs) do
+                        if serverId == tostring(existingId) then
+                            isNewServer = false
+                            break
+                        end
+                    end
+                    if isNewServer then
+                        table.insert(AllIDs, serverId)
+                        pcall(TeleportToServer, serverId)
+                        wait(4)
+                    end
+                end
+            end
+        end
+    end
+end
+
 function starthop()
     if getgenv().targ == nil then
         if getgenv().shop == false then
@@ -329,7 +373,7 @@ function starthop()
                         safezone.Parent = game:GetService("Workspace")
                         safezone.Size = Vector3.new(2, 2.02, 1)
                     end
-                until lp.PlayerGui.Main.InCombat.Visible == false
+                until lp.PlayerGui.Main.PvpDisabled.Visible == false 
                 Hop()
             end
         end
@@ -419,6 +463,7 @@ function target()
         arecall = false
     end
 end
+
 function wSend(main)
     spawn(
         function()
@@ -562,50 +607,6 @@ function buso()
         local rel = game.ReplicatedStorage
 
         rel.Remotes.CommF_:InvokeServer("Buso")
-    end
-end
-
-function Hop()
-    local PlaceID = game.PlaceId
-    local AllIDs = {}
-    local foundAnything = ""
-    local actualHour = os.date("!*t").hour
-    local Deleted = false
-
-    local function GetServers(cursor)
-        local url = "https://games.roblox.com/v1/games/" .. PlaceID .. "/servers/Public?sortOrder=2&limit=100"
-        if cursor then
-            url = url .. "&cursor=" .. cursor
-        end
-        return game.HttpService:JSONDecode(game:HttpGet(url))
-    end
-
-    local function TeleportToServer(serverId)
-        game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, serverId, game.Players.LocalPlayer)
-    end
-
-    while wait() do
-        local site = GetServers(foundAnything)
-        if site then
-            foundAnything = site.nextPageCursor or ""
-            for _, server in ipairs(site.data) do
-                if tonumber(server.maxPlayers) > tonumber(server.playing) then
-                    local serverId = tostring(server.id)
-                    local isNewServer = true
-                    for _, existingId in ipairs(AllIDs) do
-                        if serverId == tostring(existingId) then
-                            isNewServer = false
-                            break
-                        end
-                    end
-                    if isNewServer then
-                        table.insert(AllIDs, serverId)
-                        pcall(TeleportToServer, serverId)
-                        wait(4)
-                    end
-                end
-            end
-        end
     end
 end
 
