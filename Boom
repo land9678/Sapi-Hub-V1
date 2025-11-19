@@ -41,6 +41,8 @@ local lp = p.LocalPlayer
 local aa = nil
 local World1, World2, World3 = false, false, false
 local SG = game:GetService("StarterGui")
+local Skills = {"X"}
+local Booms = {"TAP"}
 
 getgenv().weapon = nil
 getgenv().hop = 1
@@ -391,104 +393,71 @@ function hasValue(tbl, val)
 end
 
 function target()
-    if arecall then return end
-    arecall = true
+    if not arecall then
+        arecall = true
+        local d = 15000
+        local p = nil
+        getgenv().targ = nil
+        getgenv().bounty = game.Players.LocalPlayer.leaderstats["Bounty/Honor"].Value
+        local lp = game.Players.LocalPlayer
 
-    local closestDist = math.huge
-    local chosen = nil
-    local localPlayer = game.Players.LocalPlayer
+        for i, v in pairs(game.Players:GetPlayers()) do
+            pcall(function()
+                local island1 = game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1")
+                
+                if island1 and v:DistanceFromCharacter(island1.Position) < 5000 then
+                    print("Player Is Raiding")
+                else
+                    if lp.Team ~= v.Team or getgenv().c.Team == "Pirates" then
+                        print("Player Is Not Same Team")
 
-    local successBounty, localBounty = pcall(function()
-        return localPlayer.leaderstats["Bounty/Honor"].Value
-    end)
-    if successBounty then
-        getgenv().bounty = localBounty
-    end
+                        if v and v:FindFirstChild("Data") and hasValue(getgenv().c["SkipFruit"], v.Data.DevilFruit.Value) == false then
+                            print("Player Allow")
 
-    for _, v in ipairs(game.Players:GetPlayers()) do
-        if v == localPlayer then
-            continue
-        end
+                            if v ~= lp and
+                               v ~= getgenv().targ and
+                               lp.Character:FindFirstChild("Head") and
+                               (v.Character:FindFirstChild("HumanoidRootPart").CFrame.Position - lp.Character:FindFirstChild("HumanoidRootPart").CFrame.Position).Magnitude < d and
+                               hasValue(getgenv().checked, v) == false then
+                                print("Player Is nearer than an old one")
 
-        if hasValue(getgenv().checked, v) then
-            continue
-        end
+                                if (Vector3.new(5230.08, 68.1503, -1451.42) - v.Character.HumanoidRootPart.Position).Magnitude > 30 then
+                                    print("???")
 
-        if not v.Character or not v.Character:FindFirstChild("HumanoidRootPart") then
-            continue
-        end
-        if not v:FindFirstChild("Data") or not v:FindFirstChild("leaderstats") then
-            continue
-        end
+                                    if (tonumber(lp.Data.Level.Value) - 500) < v.Data.Level.Value and v.Character then
+                                        print("Player is enough level")
 
-        local df = nil
-        pcall(function()
-            df = v.Data.DevilFruit and v.Data.DevilFruit.Value
-        end)
-        if df and hasValue(getgenv().c["SkipFruit"], df) then
-            continue
-        end
+                                        if v.leaderstats["Bounty/Honor"].Value >= getgenv().c["MinBountyHunt"] and
+                                           v.leaderstats["Bounty/Honor"].Value <= getgenv().c["MaxBountyHunt"] then
+                                            print("All done! Starting to hunt " .. v.Name)
 
-        local allowTeam = false
-        pcall(function()
-            if getgenv().c.Team == "Pirates" then
-                allowTeam = true
-            else
-                allowTeam = (localPlayer.Team ~= v.Team)
-            end
-        end)
-        if not allowTeam then
-            continue
-        end
+                                            p = v
+                                            d = (v.Character.HumanoidRootPart.CFrame.Position - lp.Character.HumanoidRootPart.CFrame.Position).Magnitude
 
-        local okLevelBounty = false
-        local vLevel, vBounty = nil, nil
-        pcall(function()
-            vLevel = v.Data.Level and v.Data.Level.Value
-            vBounty = v.leaderstats["Bounty/Honor"] and v.leaderstats["Bounty/Honor"].Value
-        end)
-        if not vLevel or not vBounty then
-            continue
-        end
+                                            game:GetService("ReplicatedStorage")
+                                                :WaitForChild("DefaultChatSystemChatEvents")
+                                                :FindFirstChild("SayMessageRequest")
+                                                :FireServer(getgenv().c.ChatSpam[math.random(0, #getgenv().c.ChatSpam)], "All")
 
-        local ownLevel = 0
-        pcall(function() ownLevel = localPlayer.Data.Level.Value end)
-        if (ownLevel - 500) < vLevel then
-            if vBounty >= getgenv().c["MinBountyHunt"] and vBounty <= getgenv().c["MaxBountyHunt"] then
-                local distOK, distVal = pcall(function()
-                    return (v.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-                end)
-                if distOK and distVal and distVal < closestDist then
-                    local safeSpawn = Vector3.new(5230.08, 68.1503, -1451.42)
-                    local nearSpawn = (safeSpawn - v.Character.HumanoidRootPart.Position).Magnitude <= 30
-                    if not nearSpawn then
-                        closestDist = distVal
-                        chosen = v
+                                            local u5 = require(game.ReplicatedStorage:WaitForChild("Notification"))
+                                            u5.new("<Color=Yellow>Sera Hub Auto Bounty<Color=/>"):Display()
+                                            u5.new("<Color=Yellow>Target: " .. v.Name .. "<Color=/>"):Display()
+                                            u5.new("<Color=Yellow>If Have Bug/Error, Please Report At We Discord<Color=/>"):Display()
+                                            u5.new("<Color=Yellow>bit.ly/serahub<Color=/>"):Display()
+                                        end
+                                    end
+                                end
+                            end
+                        end
                     end
                 end
-            end
+            end)
         end
-    end
 
-    getgenv().targ = chosen
-    if chosen then
+        getgenv().targ = p
         getgenv().start = os.time()
-        pcall(function()
-            game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents")
-                :FindFirstChild("SayMessageRequest")
-                :FireServer(getgenv().c.ChatSpam[math.random(1, #getgenv().c.ChatSpam)], "All")
-        end)
-
-        local u5 = require(game.ReplicatedStorage:WaitForChild("Notification"))
-        pcall(function()
-            u5.new("<Color=Yellow>Sapi Hub Auto Bounty<Color=/>"):Display()
-            u5.new("<Color=Yellow>Target: " .. chosen.Name .. "<Color=/>"):Display()
-        end)
-    else
-        getgenv().targ = nil
+        arecall = false
     end
-
-    arecall = false
 end
 
 function wSend(main)
@@ -979,29 +948,42 @@ hookfunction(request, newcclosure(function(...)
     return old(...)
 end))
 
-spawn(
-    function()
-        local gg = getrawmetatable(game)
-        local old = gg.__namecall
-        setreadonly(gg, false)
-        gg.__namecall =
-            newcclosure(
-            function(...)
-                local method = getnamecallmethod()
-                local args = {...}
-                if tostring(method) == "FireServer" then
-                    if tostring(args[1]) == "RemoteEvent" then
-                        if tostring(args[2]) ~= "true" and tostring(args[2]) ~= "false" then
-                            args[2] = AimBotSkillPosition
-                            return old(unpack(args))
-                        end
+spawn(function()
+    local ok, hookMeta = pcall(getrawmetatable, game)
+    if ok and hookMeta then
+        setreadonly(hookMeta, false)
+        local OldHook
+        OldHook = hookmetamethod(game, "__namecall", function(self, V1, V2, ...)
+            local Method = (getnamecallmethod and getnamecallmethod():lower()) or ""
+
+            if tostring(self) == "RemoteEvent" and Method == "fireserver" then
+                if typeof(V1) == "Vector3" then
+                    if AimBotSkillPosition then
+                        return OldHook(self, AimBotSkillPosition, V2, ...)
                     end
-                end
-                return old(...)
-            end
-        )
+				end				
+				if type(V1) == "string" and table.find(Booms, V1) then
+					if ZSkillorM1 then 
+	                    if AimBotSkillPosition then
+	                        return OldHook(self, V1, AimBotSkillPosition, nil, ...)
+	                    end
+					end
+				end   
+            elseif Method == "invokeserver" then  
+	            if isValidCondition() then
+	                if type(V1) == "string" and table.find(Skills, V1) then  
+	                    if AimBotSkillPosition then  
+	                        return OldHook(self, V1, AimBotSkillPosition, nil, ...)
+	                    end  
+	                end    
+				end				
+			end
+            
+            return OldHook(self, V1, V2, ...)
+        end)
+        setreadonly(hookMeta, true)
     end
-)
+end)
 
 pcall(
     function()
@@ -1049,5 +1031,3 @@ pcall(
         )
     end
 )
-
-require(game.ReplicatedStorage.Util.CameraShaker):Stop()
