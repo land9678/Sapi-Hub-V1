@@ -309,7 +309,6 @@ function target()
         getgenv().targ = nil
         getgenv().bounty = game.Players.LocalPlayer.leaderstats["Bounty/Honor"].Value
         for i, v in pairs(game.Players:GetPlayers()) do
-            print("Attempt To Scanning: " .. v)
             pcall(
                 function()
                     if
@@ -955,16 +954,12 @@ spawn(
 -- Aim
 local old = request
 
-hookfunction(
-    request,
-    newcclosuere(
-        function(...)
-            local args = (...)
-            print(game:GetService "HttpService":JSONEncode(args))
-            return old(...)
-        end
-    )
-)
+hookfunction(request, newcclosure(function(...)
+    local args = { ... }
+    print(game:GetService("HttpService"):JSONEncode(args))
+    return old(...)
+end))
+
 spawn(
     function()
         local gg = getrawmetatable(game)
