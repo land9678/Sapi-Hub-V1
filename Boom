@@ -717,7 +717,7 @@ function MakeDraggable(topbarobject, object)
 	)
 end
 MakeDraggable(menu,TextLabel)
-nextplayer.MouseButton1Down:Connect(function()
+nextplayer.Activated:Connect(function()
     findtarget()
 end)
 CamFarm = _G.Setting.Misc["Enable Cam Farm"]
@@ -735,21 +735,17 @@ else
     game.Players.LocalPlayer.CameraMaxZoomDistance = 127
     game.Players.LocalPlayer.CameraMinZoomDistance = 0
 end
-Frame_2.MouseButton1Down:Connect(function()
+kichhoatcam.Activated:Connect(function()
     if CamFarm == true then
         CamFarm = false
         kichhoatcam.Text = "Enable Cam Farm"
         game.Players.LocalPlayer.CameraMinZoomDistance = 127
         game.Players.LocalPlayer.CameraMaxZoomDistance = 127
-        game.Players.LocalPlayer.CameraMaxZoomDistance = 127
-        game.Players.LocalPlayer.CameraMinZoomDistance = 0
     else
         CamFarm = true
         kichhoatcam.Text = "Disable Cam Farm"
         game.Players.LocalPlayer.CameraMinZoomDistance = 0
         game.Players.LocalPlayer.CameraMaxZoomDistance = 0
-        game.Players.LocalPlayer.CameraMaxZoomDistance = 127
-        game.Players.LocalPlayer.CameraMinZoomDistance = 0
     end
 end)
 --// Counter
