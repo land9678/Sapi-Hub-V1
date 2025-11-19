@@ -380,77 +380,115 @@ function starthop()
     end
 end
 
+arecall = arecall or false
+
+function hasValue(tbl, val)
+    if type(tbl) ~= "table" then return false end
+    for _, v in ipairs(tbl) do
+        if v == val then return true end
+    end
+    return false
+end
+
 function target()
-    if not arecall then
-        arecall = true
-        d = 15000
-        p = nil
-        getgenv().targ = nil
-        getgenv().bounty = game.Players.LocalPlayer.leaderstats["Bounty/Honor"].Value
+    if arecall then return end
+    arecall = true
 
-        for i, v in pairs(game.Players:GetPlayers()) do
-            pcall(function()
+    local closestDist = math.huge
+    local chosen = nil
+    local localPlayer = game.Players.LocalPlayer
 
-                local island1 = game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1")
-                if island1 and v:DistanceFromCharacter(island1.Position) < 5000 then
-                    print("Player Is Raiding")
-                else
-                    if lp.Team ~= v.Team or getgenv().c.Team == "Pirates" then
-                        print("Player Is Not Same Team")
+    local successBounty, localBounty = pcall(function()
+        return localPlayer.leaderstats["Bounty/Honor"].Value
+    end)
+    if successBounty then
+        getgenv().bounty = localBounty
+    end
 
-                        if v and v:FindFirstChild("Data") and hasValue(getgenv().c["SkipFruit"], v.Data.DevilFruit.Value) == false then
-                            print("Player Allow")
+    for _, v in ipairs(game.Players:GetPlayers()) do
+        if v == localPlayer then
+            continue
+        end
 
-                            if
-                                v ~= lp and
-                                v ~= getgenv().targ and
-                                lp.Character:FindFirstChild("Head") and
-                                (v.Character:FindFirstChild("HumanoidRootPart").CFrame.Position -
-                                game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.Position).Magnitude < d and
-                                hasValue(getgenv().checked, v) == false
-                            then
-                                print("Player Is nearer than an old one")
+        if hasValue(getgenv().checked, v) then
+            continue
+        end
 
-                                if (Vector3.new(5230.08, 68.1503, -1451.42) - v.Character.HumanoidRootPart.Position).Magnitude > 30 then
-                                    print("???")
+        if not v.Character or not v.Character:FindFirstChild("HumanoidRootPart") then
+            continue
+        end
+        if not v:FindFirstChild("Data") or not v:FindFirstChild("leaderstats") then
+            continue
+        end
 
-                                    if (tonumber(game.Players.LocalPlayer.Data.Level.Value) - 500) < v.Data.Level.Value and v.Character then
-                                        print("player is enough level")
+        local df = nil
+        pcall(function()
+            df = v.Data.DevilFruit and v.Data.DevilFruit.Value
+        end)
+        if df and hasValue(getgenv().c["SkipFruit"], df) then
+            continue
+        end
 
-                                        if
-                                            (v.leaderstats["Bounty/Honor"].Value >= getgenv().c["MinBountyHunt"]) and
-                                            (v.leaderstats["Bounty/Honor"].Value <= getgenv().c["MaxBountyHunt"])
-                                        then
-                                            print("All done! Starting to hunt " .. v.Name)
+        local allowTeam = false
+        pcall(function()
+            if getgenv().c.Team == "Pirates" then
+                allowTeam = true
+            else
+                allowTeam = (localPlayer.Team ~= v.Team)
+            end
+        end)
+        if not allowTeam then
+            continue
+        end
 
-                                            p = v
-                                            d = (v.Character.HumanoidRootPart.CFrame.Position -
-                                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Position).Magnitude
+        local okLevelBounty = false
+        local vLevel, vBounty = nil, nil
+        pcall(function()
+            vLevel = v.Data.Level and v.Data.Level.Value
+            vBounty = v.leaderstats["Bounty/Honor"] and v.leaderstats["Bounty/Honor"].Value
+        end)
+        if not vLevel or not vBounty then
+            continue
+        end
 
-                                            game:GetService("ReplicatedStorage")
-                                                :WaitForChild("DefaultChatSystemChatEvents")
-                                                :FindFirstChild("SayMessageRequest")
-                                                :FireServer(getgenv().c.ChatSpam[math.random(0, #getgenv().c.ChatSpam)], "All")
-
-                                            local u5 = require(game.ReplicatedStorage:WaitForChild("Notification"))
-                                            u5.new("<Color=Yellow>Sera Hub Auto Bounty<Color=/>"):Display()
-                                            u5.new("<Color=Yellow>Target: " .. v.Name .. "<Color=/>"):Display()
-                                            u5.new("<Color=Yellow>If Have Bug/Error, Please Report At We Discord<Color=/>"):Display()
-                                            u5.new("<Color=Yellow>bit.ly/serahub<Color=/>"):Display()
-                                        end
-                                    end
-                                end
-                            end
-                        end
+        local ownLevel = 0
+        pcall(function() ownLevel = localPlayer.Data.Level.Value end)
+        if (ownLevel - 500) < vLevel then
+            if vBounty >= getgenv().c["MinBountyHunt"] and vBounty <= getgenv().c["MaxBountyHunt"] then
+                local distOK, distVal = pcall(function()
+                    return (v.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+                end)
+                if distOK and distVal and distVal < closestDist then
+                    local safeSpawn = Vector3.new(5230.08, 68.1503, -1451.42)
+                    local nearSpawn = (safeSpawn - v.Character.HumanoidRootPart.Position).Magnitude <= 30
+                    if not nearSpawn then
+                        closestDist = distVal
+                        chosen = v
                     end
                 end
-            end)
-        end        
-
-        getgenv().targ = p
-        getgenv().start = os.time()
-        arecall = false
+            end
+        end
     end
+
+    getgenv().targ = chosen
+    if chosen then
+        getgenv().start = os.time()
+        pcall(function()
+            game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents")
+                :FindFirstChild("SayMessageRequest")
+                :FireServer(getgenv().c.ChatSpam[math.random(1, #getgenv().c.ChatSpam)], "All")
+        end)
+
+        local u5 = require(game.ReplicatedStorage:WaitForChild("Notification"))
+        pcall(function()
+            u5.new("<Color=Yellow>Sapi Hub Auto Bounty<Color=/>"):Display()
+            u5.new("<Color=Yellow>Target: " .. chosen.Name .. "<Color=/>"):Display()
+        end)
+    else
+        getgenv().targ = nil
+    end
+
+    arecall = false
 end
 
 function wSend(main)
