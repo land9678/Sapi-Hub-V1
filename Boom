@@ -129,13 +129,13 @@ elseif World1 then
 end
 ------------ function
 u5 = require(game.ReplicatedStorage:WaitForChild("Notification"))
-u5.new("<Color=Yellow>Sera Hub Auto Bounty<Color=/>"):Display()
+u5.new("<Color=Yellow>Sapi Hub Auto Bounty<Color=/>"):Display()
 wait()
 u5.new("<Color=Yellow>This Is The Beta Version So Can Have Bug<Color=/>"):Display()
 wait()
 u5.new("<Color=Yellow>If Have Bug/Error/Ideas, Please Report At We Discord<Color=/>"):Display()
 wait()
-u5.new("<Color=Yellow>bit.ly/serahub<Color=/>"):Display()
+u5.new("<Color=Yellow>Sapihub<Color=/>"):Display()
 spawn(
     function()
         while task.wait() do
@@ -387,65 +387,56 @@ function target()
         p = nil
         getgenv().targ = nil
         getgenv().bounty = game.Players.LocalPlayer.leaderstats["Bounty/Honor"].Value
+
         for i, v in pairs(game.Players:GetPlayers()) do
-            pcall(
-                function()
-                    if
-                        game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1") and
-                            v:DistanceFromCharacter(
-                                game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1").Position
-                            ) < 5000
-                     then
-                        print("Player Is Raiding")
-                    else
-                        if lp.Team ~= v.Team or getgenv().c.Team == "Pirates" then
-                            print("Player Is Not Same Team")
+            pcall(function()
+
+                local island1 = game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1")
+                if island1 and v:DistanceFromCharacter(island1.Position) < 5000 then
+                    print("Player Is Raiding")
+                else
+                    if lp.Team ~= v.Team or getgenv().c.Team == "Pirates" then
+                        print("Player Is Not Same Team")
+
+                        if v and v:FindFirstChild("Data") and hasValue(getgenv().c["SkipFruit"], v.Data.DevilFruit.Value) == false then
+                            print("Player Allow")
+
                             if
-                                v and v:FindFirstChild("Data") and
-                                    hasValue(getgenv().c["SkipFruit"], v.Data.DevilFruit.Value) == false
-                             then
-                                print("Player Allow")
-                                if
-                                    v ~= lp and v ~= getgenv().targ and lp.Character:FindFirstChild "Head" and
-                                        (v.Character:FindFirstChild("HumanoidRootPart").CFrame.Position -
-                                            game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.Position).Magnitude <
-                                            d and
-                                        hasValue(getgenv().checked, v) == false
-                                 then
-                                    print("Player Is nearer than an old one")
-                                    if
-                                        (Vector3.new(5230.08, 68.1503, -1451.42) - v.Character.HumanoidRootPart.Position).Magnitude >
-                                            30
-                                     then
-                                        print("???")
+                                v ~= lp and
+                                v ~= getgenv().targ and
+                                lp.Character:FindFirstChild("Head") and
+                                (v.Character:FindFirstChild("HumanoidRootPart").CFrame.Position -
+                                game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.Position).Magnitude < d and
+                                hasValue(getgenv().checked, v) == false
+                            then
+                                print("Player Is nearer than an old one")
+
+                                if (Vector3.new(5230.08, 68.1503, -1451.42) - v.Character.HumanoidRootPart.Position).Magnitude > 30 then
+                                    print("???")
+
+                                    if (tonumber(game.Players.LocalPlayer.Data.Level.Value) - 500) < v.Data.Level.Value and v.Character then
+                                        print("player is enough level")
+
                                         if
-                                            (tonumber(game.Players.LocalPlayer.Data.Level.Value) - 500) <
-                                                v.Data.Level.Value and v.Character
-                                         then
-                                            print("player is enough level")
-                                            if
-                                                (v.leaderstats["Bounty/Honor"].Value >= getgenv().c["MinBountyHunt"]) and
-                                                    (v.leaderstats["Bounty/Honor"].Value <= getgenv().c["MaxBountyHunt"])
-                                             then
-                                                print("All done! Starting to hunt " .. v.Name)
-                                                p = v
-                                                d =
-                                                    (v.Character.HumanoidRootPart.CFrame.Position -
-                                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Position).Magnitude
-                                                game:GetService("ReplicatedStorage"):WaitForChild(
-                                                    "DefaultChatSystemChatEvents"
-                                                ):FindFirstChild("SayMessageRequest"):FireServer(
-                                                    getgenv().c.ChatSpam[math.random(0, #getgenv().c.ChatSpam)],
-                                                    "All"
-                                                )
-                                                u5 = require(game.ReplicatedStorage:WaitForChild("Notification"))
-                                                u5.new("<Color=Yellow>Sera Hub Auto Bounty<Color=/>"):Display()
-                                                u5.new("<Color=Yellow>Target: " .. v.Name .. "<Color=/>"):Display()
-                                                u5.new(
-                                                    "<Color=Yellow>If Have Bug/Error, Please Report At We Discord<Color=/>"
-                                                ):Display()
-                                                u5.new("<Color=Yellow>bit.ly/serahub<Color=/>"):Display()
-                                            end
+                                            (v.leaderstats["Bounty/Honor"].Value >= getgenv().c["MinBountyHunt"]) and
+                                            (v.leaderstats["Bounty/Honor"].Value <= getgenv().c["MaxBountyHunt"])
+                                        then
+                                            print("All done! Starting to hunt " .. v.Name)
+
+                                            p = v
+                                            d = (v.Character.HumanoidRootPart.CFrame.Position -
+                                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Position).Magnitude
+
+                                            game:GetService("ReplicatedStorage")
+                                                :WaitForChild("DefaultChatSystemChatEvents")
+                                                :FindFirstChild("SayMessageRequest")
+                                                :FireServer(getgenv().c.ChatSpam[math.random(0, #getgenv().c.ChatSpam)], "All")
+
+                                            local u5 = require(game.ReplicatedStorage:WaitForChild("Notification"))
+                                            u5.new("<Color=Yellow>Sera Hub Auto Bounty<Color=/>"):Display()
+                                            u5.new("<Color=Yellow>Target: " .. v.Name .. "<Color=/>"):Display()
+                                            u5.new("<Color=Yellow>If Have Bug/Error, Please Report At We Discord<Color=/>"):Display()
+                                            u5.new("<Color=Yellow>bit.ly/serahub<Color=/>"):Display()
                                         end
                                     end
                                 end
@@ -453,11 +444,9 @@ function target()
                         end
                     end
                 end
-            )
-        end
-        if p == nil then
-            starthop()
-        end
+            end)
+        end        
+
         getgenv().targ = p
         getgenv().start = os.time()
         arecall = false
