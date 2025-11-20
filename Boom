@@ -1577,4 +1577,4 @@ end)
 UI.UpdateTargetsList()
 
 -- Cập nhật giao diện
-UI.ShowNotification("Auto Bounty đã sẵn sàng!", "success")s")
+UI.ShowNotification("Auto Bounty đã sẵn sàng!", "success")
