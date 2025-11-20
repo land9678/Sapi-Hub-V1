@@ -1,7 +1,7 @@
-repeat wait(1) until game:IsLoaded()
+
 local AlchemyNotify = function(Text_i,Duration_i)
     game.StarterGui:SetCore("SendNotification", {
-        Title = "Kazochim Hub V2",
+        Title = "Sapi Hub",
         Text = Text_i,
         Duration = Duration_i,
         Icon = "rbxassetid://14981376704"
@@ -9,14 +9,14 @@ local AlchemyNotify = function(Text_i,Duration_i)
 end
 --Key
 wait(0.1)
-AlchemyNotify("Thanks for using Kazochim Hub!",5)
+AlchemyNotify("Thanks for using Sapi Hub!",5)
 wait(0.1)
-AlchemyNotify("discord.gg/kazochim",5)
+AlchemyNotify("discord.gg/sapihub",5)
 wait(0.5)
 local Notification = require(game:GetService("ReplicatedStorage").Notification)
-Notification.new("<Color=Cyan>Kazochim Hub V2 Script<Color=/>"):Display()
+Notification.new("<Color=Cyan>Sapi Hub Script<Color=/>"):Display()
 wait(0.5)
-Notification.new("<Color=Yellow>Create By Kazochim<Color=/>"):Display()
+Notification.new("<Color=Yellow>Create By Sapi Hub<Color=/>"):Display()
 wait(1)
 repeat
     wait()
@@ -39,9 +39,9 @@ local Raid = a:Tab("Raid", "rbxassetid://15712763124")
 local Shop = a:Tab("Shop", "rbxassetid://15712767144")
 local Misc = a:Tab("Misc", "rbxassetid://15712771666")
 
-HomePage:Seperator("Kazochim Hub")
+HomePage:Seperator("SapiHub")
 
-HomePage:Label("Blox Fruits | English Version")
+HomePage:Label("Blox Fruits")
 
 HomePage:Seperator("Status")
 local AlchemyStatuOn_Time = HomePage:Label("")
