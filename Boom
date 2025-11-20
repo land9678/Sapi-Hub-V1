@@ -150,7 +150,7 @@ local workspace = game:GetService("Workspace")
 World1 = workspace:FindFirstChild("Starter Island")
 World2 = workspace:FindFirstChild("Cafe")
 World3 = workspace:FindFirstChild("Great Tree")
-Sea = World1 or World2 or World3 or plr:Kick('\u{274c} Error : A[12]Blox Fruits \u{274c}')
+
 Marines = function()
     replicated.Remotes.CommF_:InvokeServer('SetTeam', 'Marines')
 end
