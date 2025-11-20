@@ -292,27 +292,7 @@ local UiIntilize = {
         {Mode="Toggle",Title="Auto Dough King" ,Description="", Args = {"Dough King","Enable"}},
         {Mode="Toggle",Title="Auto Cake Prince",Description="",Args = {"Cake Prince","Enable"}},
         {Mode="Toggle",Title="Auto Spawn Soul Reaper",Args = {"Spawn Soul Reaper","Enable"}},
-        {Mode="Toggle",Title="Auto Soul Reaper",Args = {"Soul Reaper","Enable"}},
-        {
-            Mode = "Dropdown",
-            Title = "Select Boss To Snipe",
-            Multi = true, 
-            Table = AllBoss[tostring(game.PlaceId)],
-            Default = getgenv().Setting.BossSniper.SelectedBoss or {},
-            OnChange = function(state)
-                local Values = {}
-                for Value, State in pairs(state) do
-                    if  type(Value) == "string" then
-                        table.insert(Values, Value)
-                    end
-                end 
-                
-
-                getgenv().Setting.BossSniper.SelectedBoss = Values
-                SettingManager:Save()
-            end
-        },     
-        {Mode="Toggle",Title="Start Boss Snipe",Description="",Args={"BossSniper","Enable"}},
+        {Mode="Toggle",Title="Auto Soul Reaper",Args = {"Soul Reaper","Enable"}},        
         {Mode="Toggle",Title="Auto Bartilo Quest",Description="Sea 2 Function",Args = {"Bartilo","Enable"}},
         {Mode="Toggle",Title="Auto Race Evolve",Description="Sea 2 Function, Need Bartilo Quest Finish",Args = {"Race Evolve","Enable"}},
         {Mode="Toggle",Title="Auto Factory",Description="Sea 2 Function Only",Args = {"Factory","Enable"}},
