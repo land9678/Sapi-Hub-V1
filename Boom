@@ -146,7 +146,7 @@ do
     ClickState = 0
     Num_self = 25
 end
-local workspace = game.GetService("Workspace")
+local workspace = game:GetService("Workspace")
 World1 = workspace:FindFirstChild("Starter Island")
 World2 = workspace:FindFirstChild("Cafe")
 World3 = workspace:FindFirstChild("Great Tree")
