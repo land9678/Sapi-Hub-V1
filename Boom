@@ -562,7 +562,7 @@ local Player = game:GetService("Players").LocalPlayer
 local Data = Player:WaitForChild("Data")
 local PlayerLevel = Data:WaitForChild("Level")
 local Points = Data:WaitForChild("Points")
-local MaxLevel = 2800
+local MaxLavel = 2800
 if PlayerLevel.Value < MaxLavel then
     local StatsTab = Window:MakeTab({"Stats", "signal"})
     local PointsSlider, Melee, Defense, Sword, Gun, DemonFruit = 1
