@@ -136,7 +136,7 @@ spawn(function()
     end
 end)
 
-local workspace = game:Geyser ice("Workspace")
+local workspace = game:GetService("Workspace")
 if workspace:FindFirstChild("Starter Island") then
     World1 = true
 elseif workspace:FindFirstChild("Cafe") then
