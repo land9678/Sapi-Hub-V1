@@ -560,7 +560,8 @@ task.spawn(function()
 end)]]
 if PlayerLevel.Value < MaxLavel then
     local StatsTab = Window:MakeTab({"Stats", "signal"})
-    local PointsSlider, Melee, Defense, Sword, Gun, DemonFruit = 1
+    local PointsSlider = 1
+    local Melee, Defense, Sword, Gun, DemonFruit = false, false, false, false, false
 
     local function AutoStats()
         local function AddStats(Stats)
